@@ -107,6 +107,7 @@ class Chrome(selenium.webdriver.chrome.webdriver.WebDriver):
     def __init__(
         self,
         executable_path="./chromedriver",
+        chrome_path=None,
         port=0,
         options=None,
         service_args=None,
@@ -118,6 +119,7 @@ class Chrome(selenium.webdriver.chrome.webdriver.WebDriver):
         user_data_dir=None,
         factor=0.5,
         delay=1,
+        extra_args=[]
     ):  
         self._data_dir_default = True
         if user_data_dir:
@@ -163,13 +165,11 @@ class Chrome(selenium.webdriver.chrome.webdriver.WebDriver):
         self.options = options
         self.user_data_dir = user_data_dir
 
-        extra_args = []
         if options.headless:
             extra_args.append("--headless")
 
         self.browser_args = [
-            find_chrome_executable(),
-            "--user-data-dir=%s" % user_data_dir,
+            chrome_path if chrome_path else find_chrome_executable(),
             "--remote-debugging-host=%s" % debug_host,
             "--remote-debugging-port=%s" % debug_port,
             "--log-level=%d" % divmod(logging.getLogger().getEffectiveLevel(), 10)[0],
@@ -309,7 +309,6 @@ class Patcher(object):
             return False
         except FileNotFoundError:
             pass
-
         release = self.fetch_release_number()
         self.version_main = release.version[0]
         self.version_full = release
