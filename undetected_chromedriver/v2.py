@@ -170,6 +170,7 @@ class Chrome(selenium.webdriver.chrome.webdriver.WebDriver):
 
         self.browser_args = [
             chrome_path if chrome_path else find_chrome_executable(),
+            "--user-data-dir=%s" % user_data_dir,
             "--remote-debugging-host=%s" % debug_host,
             "--remote-debugging-port=%s" % debug_port,
             "--log-level=%d" % divmod(logging.getLogger().getEffectiveLevel(), 10)[0],
