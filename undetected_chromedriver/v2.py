@@ -185,8 +185,6 @@ class Chrome(selenium.webdriver.chrome.webdriver.WebDriver):
             stderr=subprocess.PIPE,
         )
 
-        time.sleep(20)
-
         selenium.webdriver.chrome.webdriver.WebDriver.__init__(
             self,
             executable_path=p.target_path,
