@@ -252,9 +252,10 @@ class Chrome(selenium.webdriver.chrome.webdriver.WebDriver):
         try:
             self.get(url)
         finally:
-            self.close()
+            self.service.stop()
             # threading.Timer(factor or self.factor, self.close).start()
             time.sleep(delay or self.delay)
+            self.service.start()
             self.start_session()
 
     def quit(self):
@@ -270,8 +271,7 @@ class Chrome(selenium.webdriver.chrome.webdriver.WebDriver):
         except Exception:  # noqa
             pass
         try:
-            if self._data_dir_default:
-                shutil.rmtree(self.user_data_dir, ignore_errors=False)
+            shutil.rmtree(self.user_data_dir, ignore_errors=False)
         except PermissionError:
             time.sleep(1)
             self.quit()
@@ -283,9 +283,11 @@ class Chrome(selenium.webdriver.chrome.webdriver.WebDriver):
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self.close()
-        threading.Timer(self.factor, self.start_session).start()
+        self.service.stop()
+        # threading.Timer(self.factor, self.service.start).start()
         time.sleep(self.delay)
+        self.service.start()
+        self.start_session()
 
     def __hash__(self):
         return hash(self.options.debugger_address)
