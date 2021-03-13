@@ -27,6 +27,8 @@ import random
 from distutils.version import LooseVersion
 from urllib.request import urlopen, urlretrieve
 
+from undetected_chromedriver import constants
+
 from selenium.webdriver import Chrome as _Chrome
 from selenium.webdriver import ChromeOptions as _ChromeOptions
 
@@ -89,7 +91,7 @@ class Chrome:
         )
         instance.execute_cdp_cmd(
             "Network.setUserAgentOverride",
-            {"userAgent": original_user_agent_string.replace("Headless", ""),},
+            {"userAgent": constants.UA,},
         )
         logger.info(f"starting undetected_chromedriver.Chrome({args}, {kwargs})")
         return instance

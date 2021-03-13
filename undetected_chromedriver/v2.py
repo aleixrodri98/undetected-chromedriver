@@ -48,6 +48,8 @@ import contextlib
 from distutils.version import LooseVersion
 from urllib.request import urlopen, urlretrieve
 
+from undetected_chromedriver import constants
+
 import selenium.webdriver.chrome.service
 import selenium.webdriver.chrome.webdriver
 import selenium.webdriver.common.service
@@ -195,6 +197,21 @@ class Chrome(selenium.webdriver.chrome.webdriver.WebDriver):
             service_log_path=service_log_path,
             chrome_options=chrome_options,
             keep_alive=keep_alive,
+        )
+        self.execute_cdp_cmd(
+            "Network.setUserAgentOverride",
+            {
+                "userAgent": constants.UA
+            },
+        )
+        self.execute_cdp_cmd(
+            "Page.addScriptToEvaluateOnNewDocument",
+            {
+                "source": """
+                       Object.defineProperty(navigator, 'platform', {
+                               get: () => "Win32"
+                       })"""
+            },
         )
 
     def start_session(self, capabilities=None, browser_profile=None):
