@@ -201,16 +201,9 @@ class Chrome(selenium.webdriver.chrome.webdriver.WebDriver):
         self.execute_cdp_cmd(
             "Network.setUserAgentOverride",
             {
-                "userAgent": constants.UA
-            },
-        )
-        self.execute_cdp_cmd(
-            "Page.addScriptToEvaluateOnNewDocument",
-            {
-                "source": """
-                       Object.defineProperty(navigator, 'platform', {
-                               get: () => "Win32"
-                       })"""
+                "userAgent": constants.UA,
+                "acceptLanguage": "en-US",
+                "platform": "Win32"
             },
         )
 
