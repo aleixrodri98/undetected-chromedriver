@@ -44,11 +44,9 @@ import threading
 import time
 import zipfile
 import atexit
-import json
 import contextlib
 from distutils.version import LooseVersion
 from urllib.request import urlopen, urlretrieve
-from pathlib import Path
 
 from undetected_chromedriver import constants
 
@@ -92,14 +90,6 @@ def find_chrome_executable():
     for candidate in candidates:
         if os.path.exists(candidate) and os.access(candidate, os.X_OK):
             return os.path.normpath(candidate)
-
-def evaluationString(fun, *args):
-    """Convert function and arguments to str."""
-    _args = ', '.join([
-        json.dumps('undefined' if arg is None else arg) for arg in args
-    ])
-    expr = '(' + fun + ')(' + _args + ')'
-    return expr
 
 
 class Chrome(selenium.webdriver.chrome.webdriver.WebDriver):
@@ -208,36 +198,6 @@ class Chrome(selenium.webdriver.chrome.webdriver.WebDriver):
             chrome_options=chrome_options,
             keep_alive=keep_alive,
         )
-
-        self.execute_cdp_cmd(
-            "Page.addScriptToEvaluateOnNewDocument",
-            {
-                "source": evaluationString(
-                    Path(__file__).parent.joinpath("js/utils.js").read_text()
-                )
-            },
-        )
-
-        self.execute_cdp_cmd(
-            "Page.addScriptToEvaluateOnNewDocument",
-            {
-                "source": evaluationString(
-                    Path(__file__).parent.joinpath("js/webgl.vendor.js").read_text(),
-                    constants.VENDOR,
-                    constants.RENDERER
-                )
-            },
-        )
-
-        self.execute_cdp_cmd(
-            "Page.addScriptToEvaluateOnNewDocument",
-            {
-                "source": '''Object.defineProperty(Object.getPrototypeOf(navigator), 'vendor', {
-                    get: () => "''' + constants.VENDOR  + '''"
-                })'''
-            },
-        )
-
         self.execute_cdp_cmd(
             "Network.setUserAgentOverride",
             {
