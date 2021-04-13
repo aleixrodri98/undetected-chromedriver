@@ -289,7 +289,7 @@ class Chrome(selenium.webdriver.chrome.webdriver.WebDriver):
 class Patcher(object):
     url_repo = "https://chromedriver.storage.googleapis.com"
 
-    def __init__(self, target_path='./chromedriver', force=False, version_main: int = 0):
+    def __init__(self, target_path='./chromedriver', force=False):
         # if not target_path:
             # target_path = os.path.join(tempfile.gettempdir(), 'undetected_chromedriver', 'chromedriver')
         if not IS_POSIX:
@@ -304,7 +304,7 @@ class Patcher(object):
         self.exename = e
         self.target_path = target_path
         self.zipname = z
-        self.version_main = version_main
+        self.version_main = constants.VERSION_MAIN
         self.version_full = None
 
     def auto(self, force=False):
