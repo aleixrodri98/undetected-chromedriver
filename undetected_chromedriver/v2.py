@@ -44,9 +44,11 @@ import threading
 import time
 import zipfile
 import atexit
+import json
 import contextlib
 from distutils.version import LooseVersion
 from urllib.request import urlopen, urlretrieve
+from pathlib import Path
 
 from undetected_chromedriver import constants
 
@@ -198,6 +200,23 @@ class Chrome(selenium.webdriver.chrome.webdriver.WebDriver):
             chrome_options=chrome_options,
             keep_alive=keep_alive,
         )
+
+        self.execute_cdp_cmd(
+            "Page.addScriptToEvaluateOnNewDocument",
+            {
+                "source": Path(__file__).parent.joinpath("js/stealth.min.js").read_text()
+            },
+        )
+
+        #self.execute_cdp_cmd(
+        #    "Page.addScriptToEvaluateOnNewDocument",
+        #    {
+        #        "source": '''Object.defineProperty(Object.getPrototypeOf(navigator), 'vendor', {
+        #            get: () => "''' + constants.VENDOR  + '''"
+        #        })'''
+        #    },
+        #)
+
         self.execute_cdp_cmd(
             "Network.setUserAgentOverride",
             {
